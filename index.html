@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapp Farm Jobs</title>
+    <style>
+        /* Reset and global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        /* Main layout styles */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .category-card {
+            flex: 1 1 300px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .job-list {
+            margin-top: 10px;
+        }
+        .job-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-title {
+            font-size: 1.1rem;
+            color: #0077b5;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .job-company {
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .no-jobs {
+            font-size: 0.95rem;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="categories" id="categories"></div>
+    </div>
+
+    <script>
+        // Mock data for categories and jobs
+        const jobCategories = [
+            {
+                title: "Blockchain Development",
+                jobs: [
+                    { title: "Smart Contract Developer", company: "Blockchain Co." },
+                    { title: "Solidity Engineer", company: "Crypto Inc." }
+                ]
+            },
+            {
+                title: "Frontend Development",
+                jobs: []
+            },
+            {
+                title: "Backend Development",
+                jobs: [
+                    { title: "Node.js Developer", company: "Tech Solutions" }
+                ]
+            },
+            {
+                title: "Marketing",
+                jobs: []
+            },
+            {
+                title: "Content Writing",
+                jobs: [
+                    { title: "Technical Writer", company: "Docs Hub" },
+                    { title: "SEO Content Specialist", company: "WriteNow" }
+                ]
+            },
+            {
+                title: "Design",
+                jobs: []
+            }
+        ];
+
+        // Function to render job categories
+        function renderCategories() {
+            const categoriesContainer = document.getElementById('categories');
+            jobCategories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.classList.add('category-card');
+
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.classList.add('category-title');
+                categoryTitle.innerText = category.title;
+                categoryCard.appendChild(categoryTitle);
+
+                const jobList = document.createElement('div');
+                jobList.classList.add('job-list');
+
+                if (category.jobs.length === 0) {
+                    const noJobsMessage = document.createElement('p');
+                    noJobsMessage.classList.add('no-jobs');
+                    noJobsMessage.innerText = "No jobs at the moment";
+                    jobList.appendChild(noJobsMessage);
+                } else {
+                    category.jobs.forEach(job => {
+                        const jobItem = document.createElement('div');
+                        jobItem.classList.add('job-item');
+
+                        const jobTitle = document.createElement('a');
+                        jobTitle.href = "#";
+                        jobTitle.classList.add('job-title');
+                        jobTitle.innerText = job.title;
+                        jobItem.appendChild(jobTitle);
+
+                        const jobCompany = document.createElement('p');
+                        jobCompany.classList.add('job-company');
+                        jobCompany.innerText = job.company;
+                        jobItem.appendChild(jobCompany);
+
+                        jobList.appendChild(jobItem);
+                    });
+                }
+
+                categoryCard.appendChild(jobList);
+                categoriesContainer.appendChild(categoryCard);
+            });
+        }
+
+        // Initialize the rendering process
+        renderCategories();
+    </script>
+</body>
+</html>
