@@ -3,168 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dapp Farm Jobs</title>
+    <title>Dapp Farm Job Board</title>
     <style>
-        /* Reset and global styles */
+        /* Reset styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
-            background-color: #f9f9f9;
+            background-color: #fff;
             color: #333;
         }
+
         .container {
-            max-width: 1200px;
-            margin: auto;
+            max-width: 1100px;
+            margin: 20px auto;
             padding: 20px;
         }
-        /* Main layout styles */
-        .categories {
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #0077b5;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-bottom: 30px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
             justify-content: center;
         }
-        .category-card {
-            flex: 1 1 300px;
-            background-color: #fff;
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px 15px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.2s ease-in-out;
+            border-radius: 25px;
+            font-size: 1rem;
         }
-        .category-card:hover {
-            transform: translateY(-5px);
-        }
-        .category-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
+
+        /* Job List */
         .job-list {
-            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .job-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
+
+        .job-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            transition: box-shadow 0.3s ease;
         }
-        .job-item:last-child {
-            border-bottom: none;
+
+        .job-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         .job-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #0077b5;
-            margin-bottom: 5px;
             font-weight: bold;
-            text-decoration: none;
+            cursor: pointer;
         }
+
         .job-company {
-            color: #555;
             font-size: 0.9rem;
+            color: #777;
         }
-        .no-jobs {
+
+        .job-details {
+            margin-top: 10px;
+            display: none;
             font-size: 0.95rem;
-            color: #888;
-            font-style: italic;
+            color: #555;
+        }
+
+        .apply-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #fff;
+            background-color: #0077b5;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .apply-link:hover {
+            background-color: #005fa3;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="categories" id="categories"></div>
+        <div class="header">
+            <h1>Dapp Farm Job Board</h1>
+            <p>Find your dream job in blockchain, development, and more.</p>
+        </div>
+
+        <div class="search-bar">
+            <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search for a job..."
+                oninput="filterJobs()"
+            />
+        </div>
+
+        <div id="jobList" class="job-list"></div>
     </div>
 
     <script>
-        // Mock data for categories and jobs
-        const jobCategories = [
-            {
-                title: "Blockchain Development",
-                jobs: [
-                    { title: "Smart Contract Developer", company: "Blockchain Co." },
-                    { title: "Solidity Engineer", company: "Crypto Inc." }
-                ]
-            },
-            {
-                title: "Frontend Development",
-                jobs: []
-            },
-            {
-                title: "Backend Development",
-                jobs: [
-                    { title: "Node.js Developer", company: "Tech Solutions" }
-                ]
-            },
-            {
-                title: "Marketing",
-                jobs: []
-            },
-            {
-                title: "Content Writing",
-                jobs: [
-                    { title: "Technical Writer", company: "Docs Hub" },
-                    { title: "SEO Content Specialist", company: "WriteNow" }
-                ]
-            },
-            {
-                title: "Design",
-                jobs: []
-            }
+        // Job data
+        const jobs = [
+            { id: 1, title: "Telegram Channel Admin", company: "Dapp Media" },
+            { id: 2, title: "YouTube Content Designer", company: "Crypto Vision" },
+            { id: 3, title: "Frontend Developer", company: "Blockchain Builders" },
+            { id: 4, title: "Backend Developer", company: "Tech Innovators" },
+            { id: 5, title: "Blockchain Consultant", company: "Crypto Corp" },
+            { id: 6, title: "Graphic Designer", company: "Design Pro" },
+            { id: 7, title: "Content Writer", company: "Docs Factory" },
+            { id: 8, title: "Marketing Specialist", company: "Promo Experts" },
+            { id: 9, title: "Fullstack Developer", company: "Code Ninjas" },
+            { id: 10, title: "SEO Specialist", company: "Search Boost" },
+            { id: 11, title: "Game Developer", company: "Playcraft Studios" },
+            { id: 12, title: "Smart Contract Engineer", company: "DeFi Labs" },
+            { id: 13, title: "Product Manager", company: "Launch Hub" },
+            { id: 14, title: "Sales Executive", company: "Crypto Sales" },
+            { id: 15, title: "Community Manager", company: "Engage Inc" },
+            { id: 16, title: "Data Analyst", company: "Big Data Pros" },
+            { id: 17, title: "Mobile App Developer", company: "App Universe" },
+            { id: 18, title: "UX/UI Designer", company: "UserFlow Co." },
+            { id: 19, title: "Technical Support Engineer", company: "HelpDesk Heroes" },
+            { id: 20, title: "Blockchain Developer", company: "NextChain" },
         ];
 
-        // Function to render job categories
-        function renderCategories() {
-            const categoriesContainer = document.getElementById('categories');
-            jobCategories.forEach(category => {
-                const categoryCard = document.createElement('div');
-                categoryCard.classList.add('category-card');
+        // Render jobs
+        const jobList = document.getElementById("jobList");
 
-                const categoryTitle = document.createElement('h3');
-                categoryTitle.classList.add('category-title');
-                categoryTitle.innerText = category.title;
-                categoryCard.appendChild(categoryTitle);
+        function renderJobs(filteredJobs) {
+            jobList.innerHTML = "";
+            filteredJobs.forEach((job) => {
+                const jobCard = document.createElement("div");
+                jobCard.className = "job-card";
 
-                const jobList = document.createElement('div');
-                jobList.classList.add('job-list');
+                const title = document.createElement("p");
+                title.className = "job-title";
+                title.innerText = job.title;
+                title.onclick = () => toggleDetails(job.id);
+                jobCard.appendChild(title);
 
-                if (category.jobs.length === 0) {
-                    const noJobsMessage = document.createElement('p');
-                    noJobsMessage.classList.add('no-jobs');
-                    noJobsMessage.innerText = "No jobs at the moment";
-                    jobList.appendChild(noJobsMessage);
-                } else {
-                    category.jobs.forEach(job => {
-                        const jobItem = document.createElement('div');
-                        jobItem.classList.add('job-item');
+                const company = document.createElement("p");
+                company.className = "job-company";
+                company.innerText = `Company: ${job.company}`;
+                jobCard.appendChild(company);
 
-                        const jobTitle = document.createElement('a');
-                        jobTitle.href = "#";
-                        jobTitle.classList.add('job-title');
-                        jobTitle.innerText = job.title;
-                        jobItem.appendChild(jobTitle);
+                const details = document.createElement("div");
+                details.className = "job-details";
+                details.id = `details-${job.id}`;
+                details.innerHTML = `
+                    <p><strong>Description:</strong> Apply as a ${job.title} and showcase your skills!</p>
+                    <a href="https://t.me/DappFarmJobsBot" class="apply-link" target="_blank">
+                        Apply Now
+                    </a>
+                `;
+                jobCard.appendChild(details);
 
-                        const jobCompany = document.createElement('p');
-                        jobCompany.classList.add('job-company');
-                        jobCompany.innerText = job.company;
-                        jobItem.appendChild(jobCompany);
-
-                        jobList.appendChild(jobItem);
-                    });
-                }
-
-                categoryCard.appendChild(jobList);
-                categoriesContainer.appendChild(categoryCard);
+                jobList.appendChild(jobCard);
             });
         }
 
-        // Initialize the rendering process
-        renderCategories();
+        // Filter jobs
+        function filterJobs() {
+            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const filteredJobs = jobs.filter((job) =>
+                job.title.toLowerCase().includes(searchInput) || job.company.toLowerCase().includes(searchInput)
+            );
+            renderJobs(filteredJobs);
+        }
+
+        // Toggle job details
+        function toggleDetails(id) {
+            const details = document.getElementById(`details-${id}`);
+            details.style.display = details.style.display === "block" ? "none" : "block";
+        }
+
+        // Initial render
+        renderJobs(jobs);
     </script>
 </body>
 </html>
